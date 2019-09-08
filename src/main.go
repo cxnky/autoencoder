@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/cxnky/vid-encoder/src/bootstrapper"
 	"github.com/cxnky/vid-encoder/src/config"
 	"github.com/cxnky/vid-encoder/src/logger"
 	"github.com/fsnotify/fsnotify"
@@ -9,7 +10,7 @@ import (
 func main() {
 	logger.InitialiseLogger()
 	config.ReadConfig()
-	//bootstrapper.StartBootstrap()
+	bootstrapper.StartBootstrap()
 
 	logger.Info("Initialising file system watcher")
 	watcher, err := fsnotify.NewWatcher()
