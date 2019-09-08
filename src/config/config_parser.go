@@ -8,8 +8,8 @@ import (
 
 type Config struct {
 	WatchDirectories []string `json:"watch_directories"`
-	EncodeDirectory string `json:"encode_directory"`
-	DeleteOriginal bool `json:"delete_original"`
+	EncodeDirectory  string   `json:"encode_directory"`
+	DeleteOriginal   bool     `json:"delete_original"`
 }
 
 var Configuration Config
