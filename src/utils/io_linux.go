@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/cxnky/vid-encoder/src/logger"
+	"github.com/cxnky/autoencoder/src/logger"
 	"os"
 )
 

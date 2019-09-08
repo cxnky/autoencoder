@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/cxnky/vid-encoder/src/logger"
+	"github.com/cxnky/autoencoder/src/logger"
 	"io/ioutil"
 )
 

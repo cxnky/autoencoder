@@ -1,4 +1,4 @@
-module github.com/cxnky/vid-encoder
+module github.com/cxnky/autoencoder
 
 go 1.13
 

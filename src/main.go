@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/cxnky/vid-encoder/src/config"
-	"github.com/cxnky/vid-encoder/src/logger"
-	"github.com/cxnky/vid-encoder/src/utils"
+	"github.com/cxnky/autoencoder/src/config"
+	"github.com/cxnky/autoencoder/src/logger"
+	"github.com/cxnky/autoencoder/src/utils"
 	"github.com/fsnotify/fsnotify"
 	"path/filepath"
 	"time"
