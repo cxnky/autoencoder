@@ -2,7 +2,11 @@ package worker
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/cxnky/autoencoder/src/config"
 	"github.com/cxnky/autoencoder/src/logger"
+	"github.com/xfrr/goffmpeg/transcoder"
+	"path/filepath"
 )
 
 type Worker struct {
@@ -44,8 +48,32 @@ func (w *Worker) Start() {
 					break
 				}
 
-				// todo: encode the file here
-				// todo: ask the user what format they want
+				fileExt := filepath.Ext(encodingJob.FilePath)
+
+				if fileExt == ".crdownload" {
+					logger.Info("Stopping work request as it is for a partial download file")
+					break
+				}
+
+				// todo: look into job duplication issue
+				transcoder := new(transcoder.Transcoder)
+				fileName := filepath.Base(encodingJob.FilePath)
+
+				err = transcoder.Initialize(encodingJob.FilePath, config.Configuration.EncodeDirectory+"/"+fileName+"."+config.Configuration.OutputFormat)
+
+				if err != nil {
+					logger.Error("Unable to transcode: " + err.Error())
+					break
+				}
+
+				done := transcoder.Run(true)
+				progress := transcoder.Output()
+
+				for msg := range progress {
+					logger.Debug(fmt.Sprintf("Progress: %f, bitrate: %s, speed: %s", msg.Progress, msg.CurrentBitrate, msg.Speed))
+				}
+
+				err = <-done
 
 			}
 

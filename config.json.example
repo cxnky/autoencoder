@@ -6,5 +6,6 @@
   "encode_directory": "/home/connor/Documents/Encoded",
   "delete_original": true,
   "max_queue_length": 1024,
-  "concurrent_workers": 2
+  "concurrent_workers": 2,
+  "output_format": "mp4"
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/cxnky/autoencoder/src/config"
 	"github.com/cxnky/autoencoder/src/logger"
 	"github.com/cxnky/autoencoder/src/utils/io"
@@ -45,12 +46,30 @@ func main() {
 								break
 							}
 
-							time.Sleep(500 * time.Millisecond)
+							time.Sleep(100 * time.Millisecond)
 
 						}
 					}
 
+					workData := worker.EncodingJob{
+						FilePath: event.Name,
+					}
+
+					bytes, err := json.Marshal(workData)
+
+					if err != nil {
+						logger.Error("Unable to marshal JSON: " + err.Error())
+						break
+					}
+
 					// File is no longer locked, we can encode now
+					workRequest := worker.WorkRequest{
+						Data: bytes,
+						Type: "video",
+					}
+
+					worker.QueueWork(workRequest)
+					break
 
 				}
 			case err, ok := <-watcher.Errors:

@@ -14,6 +14,7 @@ type Config struct {
 	DeleteOriginal    bool     `json:"delete_original"`
 	MaxQueueLength    int      `json:"max_queue_length"`
 	ConcurrentWorkers int      `json:"concurrent_workers"`
+	OutputFormat      string   `json:"output_format"`
 }
 
 var Configuration Config
