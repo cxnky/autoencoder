@@ -5,12 +5,15 @@ import (
 	"github.com/cxnky/autoencoder/src/logger"
 	"io/ioutil"
 	"os"
+	"runtime"
 )
 
 type Config struct {
-	WatchDirectories []string `json:"watch_directories"`
-	EncodeDirectory  string   `json:"encode_directory"`
-	DeleteOriginal   bool     `json:"delete_original"`
+	WatchDirectories  []string `json:"watch_directories"`
+	EncodeDirectory   string   `json:"encode_directory"`
+	DeleteOriginal    bool     `json:"delete_original"`
+	MaxQueueLength    int      `json:"max_queue_length"`
+	ConcurrentWorkers int      `json:"concurrent_workers"`
 }
 
 var Configuration Config
@@ -42,6 +45,10 @@ func ReadConfig() {
 		if _, err := os.Stat(dir); os.IsNotExist(err) {
 			logger.Fatal(dir + " does not exist on this system")
 		}
+	}
+
+	if runtime.NumCPU() < config.ConcurrentWorkers {
+		logger.Warning("You have specified more concurrent workers than you have CPU cores!")
 	}
 
 	logger.Info("Config successfully validated")

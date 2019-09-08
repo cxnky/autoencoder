@@ -4,6 +4,7 @@ import (
 	"github.com/cxnky/autoencoder/src/config"
 	"github.com/cxnky/autoencoder/src/logger"
 	"github.com/cxnky/autoencoder/src/utils/io"
+	"github.com/cxnky/autoencoder/src/utils/worker"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gen2brain/beeep"
 	"path/filepath"
@@ -72,6 +73,9 @@ func main() {
 			logger.Info("Watching " + dir)
 		}
 	}
+
+	logger.Info("Starting dispatcher")
+	worker.StartDispatcher(config.Configuration.ConcurrentWorkers)
 
 	err = beeep.Notify("AutoEncoder", "AutoEncoder is now watching "+strconv.Itoa(len(config.Configuration.WatchDirectories))+" directories", "")
 

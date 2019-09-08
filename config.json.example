@@ -4,5 +4,7 @@
     "C:\\Users\\Connor\\Documents\\Folder"
   ],
   "encode_directory": "/home/connor/Documents/Encoded",
-  "delete_original": true
+  "delete_original": true,
+  "max_queue_length": 1024,
+  "concurrent_workers": 2
 }
