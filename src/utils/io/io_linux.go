@@ -1,4 +1,4 @@
-package utils
+package io
 
 import (
 	"github.com/cxnky/autoencoder/src/logger"

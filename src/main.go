@@ -3,9 +3,11 @@ package main
 import (
 	"github.com/cxnky/autoencoder/src/config"
 	"github.com/cxnky/autoencoder/src/logger"
-	"github.com/cxnky/autoencoder/src/utils"
+	"github.com/cxnky/autoencoder/src/utils/io"
 	"github.com/fsnotify/fsnotify"
+	"github.com/gen2brain/beeep"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -35,7 +37,7 @@ func main() {
 				if event.Op&fsnotify.Create == fsnotify.Create {
 					if filepath.Ext(event.Name) != ".crdownload" {
 						for {
-							if utils.IsFileLocked(event.Name) {
+							if io.IsFileLocked(event.Name) {
 								logger.Debug("File is locked")
 							} else {
 								logger.Debug("File is not locked")
@@ -69,6 +71,12 @@ func main() {
 		} else {
 			logger.Info("Watching " + dir)
 		}
+	}
+
+	err = beeep.Notify("AutoEncoder", "AutoEncoder is now watching "+strconv.Itoa(len(config.Configuration.WatchDirectories))+" directories", "")
+
+	if err != nil {
+		logger.Warning("Unable to show notification, AutoEncoder is now ready.")
 	}
 
 	<-done
