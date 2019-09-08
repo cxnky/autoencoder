@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/cxnky/vid-encoder/src/bootstrapper"
 	"github.com/cxnky/vid-encoder/src/config"
 	"github.com/cxnky/vid-encoder/src/logger"
+	"github.com/cxnky/vid-encoder/src/utils"
 	"github.com/fsnotify/fsnotify"
+	"path/filepath"
+	"time"
 )
 
 func main() {
 	logger.InitialiseLogger()
 	config.ReadConfig()
-	bootstrapper.StartBootstrap()
 
 	logger.Info("Initialising file system watcher")
 	watcher, err := fsnotify.NewWatcher()
@@ -32,9 +33,23 @@ func main() {
 				}
 
 				if event.Op&fsnotify.Create == fsnotify.Create {
-					// todo: detect lock on both windows and linux
-				}
+					if filepath.Ext(event.Name) != ".crdownload" {
+						for {
+							if utils.IsFileLocked(event.Name) {
+								logger.Debug("File is locked")
+							} else {
+								logger.Debug("File is not locked")
+								break
+							}
 
+							time.Sleep(500 * time.Millisecond)
+
+						}
+					}
+
+					// File is no longer locked, we can encode now
+
+				}
 			case err, ok := <-watcher.Errors:
 				if !ok {
 					return
