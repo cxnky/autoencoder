@@ -1,0 +1,8 @@
+{
+  "watch_directories": [
+    "/home/connor/Documents/",
+    "C:\\Users\\Connor\\Documents\\Folder"
+  ],
+  "encode_directory": "/home/connor/Documents/Encoded",
+  "delete_original": true
+}
