@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/cxnky/autoencoder/src/config"
 	"github.com/cxnky/autoencoder/src/logger"
 	"github.com/cxnky/autoencoder/src/utils/io"
@@ -9,13 +10,16 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/gen2brain/beeep"
 	"path/filepath"
-	"strconv"
 	"time"
 )
 
 func main() {
 	logger.InitialiseLogger()
 	config.ReadConfig()
+
+	if len(config.Configuration.WatchDirectories) == 0 {
+		logger.Fatal("You need to specify at least one watch directory!")
+	}
 
 	logger.Info("Initialising file system watcher")
 	watcher, err := fsnotify.NewWatcher()
@@ -96,7 +100,15 @@ func main() {
 	logger.Info("Starting dispatcher")
 	worker.StartDispatcher(config.Configuration.ConcurrentWorkers)
 
-	err = beeep.Notify("AutoEncoder", "AutoEncoder is now watching "+strconv.Itoa(len(config.Configuration.WatchDirectories))+" directories", "")
+	watchingString := ""
+
+	if len(config.Configuration.WatchDirectories) == 1 {
+		watchingString = "1 directory"
+	} else {
+		watchingString = fmt.Sprintf("%d directories", len(config.Configuration.WatchDirectories))
+	}
+
+	err = beeep.Notify("AutoEncoder", "AutoEncoder is now watching "+watchingString, "")
 
 	if err != nil {
 		logger.Warning("Unable to show notification, AutoEncoder is now ready.")
