@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/cxnky/autoencoder/src/config"
 	"github.com/cxnky/autoencoder/src/logger"
+	"github.com/cxnky/autoencoder/src/utils/io"
 	"github.com/xfrr/goffmpeg/transcoder"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Worker struct {
@@ -48,11 +51,26 @@ func (w *Worker) Start() {
 					break
 				}
 
-				fileExt := filepath.Ext(encodingJob.FilePath)
+				file, err := os.Open(encodingJob.FilePath)
 
-				if fileExt == ".crdownload" {
-					logger.Info("Stopping work request as it is for a partial download file")
-					break
+				if err != nil {
+					logger.Error("Unable to determine content type of the file: " + err.Error())
+					return
+				}
+
+				contentType, err := io.GetFileContentType(file)
+				_ = file.Close()
+
+				if err != nil {
+					logger.Error("Unable to fetch content type of file: " + err.Error())
+					return
+				}
+
+				beginningContentType := strings.Split(contentType, "/")[0]
+
+				if beginningContentType != "video" && beginningContentType != "audio" {
+					logger.Error("Invalid file type detected in encode folder: " + encodingJob.FilePath)
+					return
 				}
 
 				// todo: look into job duplication issue
@@ -63,7 +81,7 @@ func (w *Worker) Start() {
 
 				if err != nil {
 					logger.Error("Unable to transcode: " + err.Error())
-					break
+					return
 				}
 
 				done := transcoder.Run(true)
